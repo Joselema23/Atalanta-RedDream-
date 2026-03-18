@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>atalanta | acceso</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="login.css">
+</head>
+<body>
+
+<!-- Fondo -->
+<div class="gradient-bg">
+  <div class="g1"></div>
+  <div class="g2"></div>
+  <div class="g3"></div>
+</div>
+<div class="particles" id="particles"></div>
+<div class="noise"></div>
+<div class="scanline"></div>
+
+<!-- ===== CONTENIDO PRINCIPAL ===== -->
+<div class="login-wrapper">
+
+  <!-- Logo -->
+  <div class="brand">
+    <img src="../ATALANTA_5_150ppp.png" alt="Atalanta" class="brand-logo-img">
+    <div class="brand-tagline">// acceso seguro al sistema</div>
+  </div>
+
+  <!-- Card -->
+  <div class="auth-card">
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('login')">Iniciar sesión</button>
+      <button class="tab-btn" onclick="switchTab('register')">Registrate</button>
+      <div class="tab-indicator" id="tabIndicator"></div>
+    </div>
+
+    <!-- ===== PANEL LOGIN ===== -->
+    <div class="panel active" id="panel-login">
+      <div class="form-group">
+        <label>Correo electrónico</label>
+        <div class="input-icon-wrap">
+          <input type="email" id="login-email" placeholder="usuario@empresa.com" autocomplete="email">
+          <span class="input-icon">✉</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Contraseña</label>
+        <div class="input-icon-wrap">
+          <input type="password" id="login-pass" placeholder="••••••••" autocomplete="current-password">
+        </div>
+      </div>
+
+      <div style="text-align:right; margin-top:-0.6rem; margin-bottom:1.2rem;">
+        <a href="#" style="font-family:'Share Tech Mono',monospace; font-size:0.75rem; color:var(--text-secondary); text-decoration:none; transition:color .2s;"
+           onmouseover="this.style.color='#ef4444'" onmouseout="this.style.color='#D6391A">
+          ¿Olvide mi contraseña?
+        </a>
+      </div>
+
+      <button class="btn-submit" id="loginBtn" onclick="handleLogin()">
+        <span class="btn-text">Acceder al sistema</span>
+        <span class="btn-spinner"><div class="spinner-ring"></div></span>
+      </button>
+
+      <div class="form-footer">
+        ¿aún sin cuenta? <a href="#" onclick="switchTab('register');return false;">Regístrate aquí</a>
+      </div>
+    </div>
+
+    <!-- ===== PANEL REGISTRO ===== -->
+    <div class="panel" id="panel-register">
+
+      <!-- Step indicator -->
+      <div class="step-indicator">
+        <div class="step active" id="step-dot-1">
+          <div class="step-circle">01</div>
+          <div class="step-label">Cuenta</div>
+        </div>
+        <div class="step-line" id="step-line-1"></div>
+        <div class="step" id="step-dot-2">
+          <div class="step-circle">02</div>
+          <div class="step-label">Perfil</div>
+        </div>
+        <div class="step-line" id="step-line-2"></div>
+        <div class="step" id="step-dot-3">
+          <div class="step-circle">03</div>
+          <div class="step-label">Cargo</div>
+        </div>
+      </div>
+
+      <!-- PASO 1: Email + Contraseña -->
+      <div class="reg-step active" id="reg-step-1">
+        <div class="form-group">
+          <label>Correo electrónico</label>
+          <div class="input-icon-wrap">
+            <input type="email" id="reg-email" placeholder="usuario@empresa.com">
+            <span class="input-icon">✉</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Contraseña</label>
+          <div class="input-icon-wrap">
+            <input type="password" id="reg-pass" placeholder="Mín. 8 caracteres" oninput="checkStrength(this.value)">
+          </div>
+          <div class="strength-wrap">
+            <div class="strength-bar" id="strengthBar"></div>
+          </div>
+          <div class="strength-text" id="strengthText"></div>
+        </div>
+
+        <div class="form-group">
+          <label>Confirmar contraseña</label>
+          <div class="input-icon-wrap">
+            <input type="password" id="reg-pass2" placeholder="Repite tu contraseña">
+          </div>
+        </div>
+
+        <button class="btn-next" onclick="goStep(2)">Siguiente →</button>
+      </div>
+      <br>
+      <!-- PASO 2: Datos personales -->
+      <div class="reg-step" id="reg-step-2">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Nombre</label>
+            <input type="text" id="reg-nombre" placeholder="María">
+          </div>
+          <div class="form-group">
+            <label>Apellidos</label>
+            <input type="text" id="reg-apellido" placeholder="García López">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Teléfono</label>
+          <div class="input-icon-wrap">
+            <input type="tel" id="reg-tel" placeholder="+34 600 000 000">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Fecha de nacimiento</label>
+          <input type="date" id="reg-fecha" style="color-scheme: dark;">
+        </div>
+        </bR>
+
+        <div class="step-nav">
+          <button class="btn-back" onclick="goStep(1)">← Volver</button>
+          <button class="btn-next" onclick="goStep(3)">Siguiente →</button>
+        </div>
+      </div>
+
+        <div class="checkbox-group">
+          <input type="checkbox" id="terms">
+          <label for="terms">
+            Acepto los <a href="#">términos y condiciones</a> y la <a href="#">política de privacidad</a>
+          </label>
+        </div>
+
+        <div class="step-nav">
+          <button class="btn-back" onclick="goStep(2)">← Volver</button>
+          <button class="btn-submit" style="flex:1; margin-top:0;" id="registerBtn" onclick="handleRegister()">
+            <span class="btn-text">Crear cuenta</span>
+            <span class="btn-spinner"><div class="spinner-ring"></div></span>
+          </button>
+        </div>
+      </div>
+
+      <div class="form-footer" style="margin-top:1.2rem;">
+        ¿Ya tienes cuenta? <a href="#" onclick="switchTab('login');return false;">Inicia sesión</a>
+      </div>
+    </div>
+    <!-- fin panel registro -->
+
+  </div>
+  <!-- fin auth-card -->
+
+  <div style="text-align:center; margin-top:1.5rem; font-family:'Share Tech Mono',monospace; font-size:0.65rem; color:rgba(255,255,255,0.12); letter-spacing:.15em;">
+    ATALANTA CIBERSEGURIDAD © 2026 // ACCESO PROTEGIDO
+  </div>
+
+</div>
+<!-- fin login-wrapper -->
+
+<!-- Toast -->
+<div class="toast" id="toast">
+  <span class="toast-icon" id="toastIcon">✓</span>
+  <span id="toastMsg">Mensaje</span>
+</div>
+
+<script src="login.js"></script>
+</body>
+</html>
