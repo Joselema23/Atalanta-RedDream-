@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GestiónTickets — Sistema de Soporte</title>
+
+  <!-- Fuentes -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=Inter:wght@400;500;600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+
+  <!-- Estilos -->
+  <link rel="stylesheet" href="tickets.css">
+</head>
+<body>
+
+  <!-- Fondo ambiental decorativo -->
+  <div class="ambient"></div>
+
+  <!-- Toast de alertas -->
+  <div class="alert" id="alert"></div>
+
+  <!-- ============================
+       PANTALLA DE LOGIN
+  ============================= -->
+  <div id="loginScreen">
+    <div class="login-wrap">
+      <div class="login-logo">
+       <a href="../atalanta.html"> <img src="../ATALANTA_5_150ppp.png" alt=""></a>
+      </div>
+
+      <div class="login-card">
+        <p class="login-title">Iniciar Sesión</p>
+
+        <div class="form-group">
+          <label>Usuario / Email</label>
+          <input type="text" id="loginUser" placeholder="usuario@empresa.com">
+        </div>
+
+        <div class="form-group">
+          <label>Contraseña</label>
+          <input type="password" id="loginPass" placeholder="••••••••">
+          <div class="login-error" id="loginError">❌ Credenciales incorrectas</div>
+        </div>
+
+        <button class="btn btn-primary btn-full" onclick="doLogin()">Entrar al sistema →</button>
+
+        <div class="login-demo">
+          <p>// Usuarios de demo jose esto lo quitamos, es para acceder facil jijij</p>
+          <div class="demo-users" id="demoUsers"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================
+       APLICACIÓN PRINCIPAL
+  ============================= -->
+  <div id="app">
+
+    <!-- Barra de navegación -->
+    <nav>
+      <div>
+        <div class="nav-brand"> <img src="../ATALANTA_5_150ppp.png" alt=""></div>
+      </div>
+      <div class="nav-right">
+        <div class="user-chip">
+          <div class="user-avatar" id="navAvatar"></div>
+          <span class="user-name" id="navName"></span>
+          <span class="badge" id="navBadge"></span>
+        </div>
+        <button class="btn btn-secondary btn-sm" onclick="doLogout()">Salir</button>
+      </div>
+    </nav>
+
+    <!-- Layout principal: sidebar + contenido -->
+    <div class="layout">
+
+      <!-- Sidebar dinámico (construido por JS según rol) -->
+      <aside id="sidebar"></aside>
+
+      <main>
+
+        <!-- ── VISTA: Dashboard ── -->
+        <div class="view active" id="view-dashboard">
+          <div class="page-header">
+            <h2>RESUMEN</h2>
+            <p>sistema de tickets</p>
+          </div>
+          <div class="stats-grid" id="statsGrid"></div>
+          <div class="page-header" style="margin-bottom:1rem">
+            <h2 style="font-size:1.2rem">Tickets Recientes</h2>
+          </div>
+          <div class="tickets-list" id="dashTickets"></div>
+        </div>
+
+        <!-- ── VISTA: Lista de tickets ── -->
+        <div class="view" id="view-tickets">
+          <div class="page-header">
+            <h2 id="ticketsViewTitle">Tickets</h2>
+            <p id="ticketsViewSub">Gestiona y revisa los tickets</p>
+          </div>
+          <div class="toolbar">
+            <div class="search-box">
+              <input type="text" id="searchInput" placeholder="Buscar tickets..." oninput="renderTickets()">
+            </div>
+            <div class="filter-group" id="filterGroup">
+              <button class="filter-btn active" onclick="setFilter('all', this)">Todos</button>
+              <button class="filter-btn" onclick="setFilter('abierto', this)">Abiertos</button>
+              <button class="filter-btn" onclick="setFilter('en_revision', this)">En Revisión</button>
+              <button class="filter-btn" onclick="setFilter('cerrado', this)">Cerrados</button>
+            </div>
+            <div id="createTicketBtn"></div>
+          </div>
+          <div class="tickets-list" id="ticketsList"></div>
+        </div>
+
+        <!-- ── VISTA: Gestión de usuarios (solo Admin) ── -->
+        <div class="view" id="view-users">
+          <div class="page-header">
+            <h2>👥 Gestión de Usuarios</h2>
+            <p>Administra roles y permisos del sistema</p>
+          </div>
+          <div class="users-grid" id="usersList"></div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- ============================
+       MODAL: Detalle del ticket
+  ============================= -->
+  <div class="modal-overlay" id="ticketModal">
+    <div class="modal">
+      <div class="modal-header">
+        <div>
+          <h3 id="modalTitle">Ticket</h3>
+          <div style="display:flex;align-items:center;gap:8px;margin-top:6px" id="modalBadges"></div>
+        </div>
+        <button class="modal-close" onclick="closeModal('ticketModal')">✕</button>
+      </div>
+      <div class="modal-body" id="modalBody"></div>
+    </div>
+  </div>
+
+  <!-- ============================
+       MODAL: Nuevo ticket
+  ============================= -->
+  <div class="modal-overlay" id="newTicketModal">
+    <div class="modal" style="max-width:540px">
+      <div class="modal-header">
+        <h3>➕ Nuevo Ticket</h3>
+        <button class="modal-close" onclick="closeModal('newTicketModal')">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Título del ticket</label>
+          <input type="text" id="nt_title" placeholder="Describe brevemente el problema">
+        </div>
+        <div class="form-group">
+          <label>Descripción detallada</label>
+          <textarea id="nt_desc" placeholder="Explica el problema con todo el detalle posible..."></textarea>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Categoría</label>
+            <select id="nt_cat">
+              <option value="soporte">Soporte técnico</option>
+              <option value="acceso">Acceso / Login</option>
+              <option value="bug">Error / Bug</option>
+              <option value="mejora">Mejora</option>
+              <option value="otro">Otro</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Prioridad</label>
+            <select id="nt_prior">
+              <option value="baja">🟢 Baja</option>
+              <option value="media" selected>🟡 Media</option>
+              <option value="alta">🔴 Alta</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('newTicketModal')">Cancelar</button>
+        <button class="btn btn-primary" onclick="createTicket()">Crear Ticket →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Script (al final del body para que el DOM esté listo) -->
+  <script src="tickets.js"></script>
+
+</body>
+</html>
